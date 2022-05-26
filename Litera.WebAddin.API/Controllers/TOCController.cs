@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Litera.WebAddin.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class TOCController : Controller
     {
@@ -15,9 +15,8 @@ namespace Litera.WebAddin.API.Controllers
         {
             if (word.OOXML == null)
             {
-                return Json(new { data = string.Empty });
+                return Json(new { ooxml = string.Empty });
             }
-           
             MemoryStream mStrm = new MemoryStream(Encoding.UTF8.GetBytes(word.OOXML));
             Document doc = new Document(mStrm);
             DocumentBuilder builder = new DocumentBuilder(doc);
@@ -26,7 +25,9 @@ namespace Litera.WebAddin.API.Controllers
             string filepath = Path.GetTempPath() + "output2.xml";
             doc.Save(filepath);
             var output = System.IO.File.ReadAllText(filepath);
-            return Json(new { data = output });
+            if (System.IO.File.Exists(filepath))
+                System.IO.File.Delete(filepath);
+            return Json(new { ooxml = output });
         }
     }
 

@@ -22,23 +22,20 @@
             // Synchronize the document state by executing the queued commands,
             // and return a promise to indicate task completion.
             return context.sync().then(function () {
-                const url = "https://localhost:44339/TOC/addtoc";
-                var data = { OOXML: bodyOOXML.value };
                 $.ajax({
                     type: "POST",
-                    url: url,
-                    data: JSON.stringify(data),
+                    url: "https://localhost:44339/toc/addtoc",
+                    data: JSON.stringify({ OOXML: bodyOOXML.value }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
-                    async: false,
-                    success: function (dat) {
-                        setOOXML(dat.data);
-                    }
+                    success: function (data) {
+                        setOOXML(data.ooxml);
+                    },
+                    error: errorHandler
                 });
             });
         }).catch(errorHandler);
     }
-
     function setOOXML(currentOOXML) {
         // Check whether we have OOXML in the variable.
         if (currentOOXML != "") {
